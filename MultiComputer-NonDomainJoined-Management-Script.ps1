@@ -1,6 +1,6 @@
 
 #===========================================================================================================================
-#The Eglin admin script is degined to provide a series of menus that give admins control from a single workstation.
+#The admin script is degined to provide a series of menus that give admins control from a single workstation.
 #The admin can run this script to create the same account on all the required machines, reset passwords, or even
 #unlock accounts all from a single workstation despite being a peer-to-peer network.
 #
