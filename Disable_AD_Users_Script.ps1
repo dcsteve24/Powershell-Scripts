@@ -7,7 +7,7 @@ Import-Module ActiveDirectory
 #OU or domain is desired and assuming user has permissions, add a -SearchBase "OU=XXXXX, dc=xxxx" to
 #the $Users variable, inbetween Get-ADUser and -Filter. See below for exacts on OU and dc structure
 #
-#The SearchBase argument takes an LDAP string; every folder structure in OU needs a new OU=, every 
+#The SearchBase argument takes an LDAP string; every folder structure in OU needs a new OU=, every
 #period in the DC needs a new dc=. Example: A Domain Users OU nested under Users OU in the domain
 #area52.afnoapps.us.af.mil would look like -SetBase "OU=Domain Users,OU=Users,dc=area52,dc=afnoapps,
 #dc=us,dc=af,dc=mil"
@@ -24,7 +24,7 @@ Import-Module ActiveDirectory
 #must be ran on PowerShell v2 or greater and must be able to load the ActiveDirectory Module (usually
 #best to run on the DC)
 #
-#Created: Steven Craig, Harris Sub-contractor 17May18
+#Created: Steven Craig, 17May18
 #Edited: 25Jun18 Property used was not updated to correct dates in Windows side. Found a different
 #	property to use that required conversion and edited script to work.
 #--------------------------------------------------------------------------------------------
