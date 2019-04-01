@@ -1,4 +1,4 @@
-
+Where-ObjectWhere-ObjectWhere-ObjectWhere-ObjectWhere-ObjectWhere-ObjectWhere-ObjectWhere-ObjectWhere-ObjectWhere-ObjectWhere-ObjectWhere-ObjectWhere-ObjectWhere-ObjectWhere-ObjectWhere-ObjectWhere-ObjectWhere-ObjectWhere-ObjectWhere-ObjectWhere-ObjectWhere-ObjectWhere-ObjectWhere-ObjectWhere-ObjectWhere-ObjectWhere-Object
 #===========================================================================================================================
 #The admin script is degined to provide a series of menus that give admins control from a single workstation.
 #The admin can run this script to create the same account on all the required machines, reset passwords, or even
@@ -15,7 +15,7 @@
 #
 #Requirements (on each machine):
 # - Able to run scripts on the machines (proper Set-ExecutionPolicy)
-# - Set Newtowk Connection to Private (next commands will error if not)
+# - Set Newtwork Connection to Private (next commands will error if not)
 # - Enable WinRM w/ Powershell Remoting
 #   - WinRM quickconfig   #then answer the prompts with your information
 #   - Enable-PSRemoting
@@ -26,8 +26,8 @@
 #-----------------------------------------------------------------------------------------------------------------------------
 #
 #Edit the script for your env:
-# 1. Under Function "WHERETORUN" change HOSTNAME to your hostnames (remove or add to menu and checks as needed)
-# 2. Under Function "WHERETORUN" change the YOUR_IPs to your IPs (remove or add to the switch statement as needed)
+# 1. Under Function "RunLocationPrompt" change HOSTNAME to your hostnames (remove or add to menu and checks as needed)
+# 2. Under Function "RunLocationPrompt" change the YOUR_IPs to your IPs (remove or add to the switch statement as needed)
 # 3. Under Function "EXISTINGRIGHTSREQUIRED" and "NEWRIGHTSREQUIRED" change YOUR_GROUP_NAME_DESCRIPTION to the group names you need to
 #     assign. For example, an Administrator with Burn Rights. (remove or add to menu and checks as needed)
 # 4. Edit Switch 1 of Main Code "New User Creation" line $newUser.SetPassword("YOUR_TEMP_PASSWORD") to be a temporary passwords
@@ -50,7 +50,7 @@ Function AskInput
 
     Param([string]$mesg)
 
-    Clear
+    Clear-Host
     do { $x = Read-Host $mesg }
     while ($x -eq [string]::Empty)
 
@@ -62,7 +62,7 @@ Function AskYorN
     #returns true or false based on the question
     Param([string]$mesg)
 
-    Clear
+    Clear-Host
     do { $x = Read-Host $mesg }
     while (!(($x -match "y") -OR ($x -match "yes") -OR ($x -match "n") -OR ($x -match "no")))
     switch ($x) {
@@ -77,7 +77,7 @@ Function AskYorN
 
 Function CleanUp
 {
-    Foreach ($x in (Get-PSSession | where { $_.State -eq "Opened" })) { Disconnect-PSSession -Id $x.Id | Out-Null}
+    Foreach ($x in (Get-PSSession | Where-Object { $_.State -eq "Opened" })) { Disconnect-PSSession -Id $x.Id | Out-Null}
     Foreach ($x in (Get-PSSession)) { Remove-PSSession -Id $x.Id | Out-Null }
     Write-Host -ForegroundColor Green "Successfully disconnected from host(s)"
 } #End CleanUp Function
@@ -95,7 +95,7 @@ Function Credentials
 
 Function ExistingRightsRequired
 {
-    Clear
+    Clear-Host
     Write-Host "What rights would you like to assign or remove on the user:"
     Write-Host "------------------------------------------------------"
     Write-Host "1: YOUR_GROUP_NAME_DESCRIPTION"
@@ -113,7 +113,7 @@ Function ExistingRightsRequired
 
 Function NewRightsRequired
 {
-    Clear
+    Clear-Host
     Write-Host "What rights would you like to assign the user:"
     Write-Host "------------------------------------------------------"
     Write-Host "1: YOUR_GROUP_NAME_DESCRIPTION"
@@ -153,7 +153,7 @@ Function Welcome
     return $x
 } #End Function Welcome
 
-Function WhereToRun
+Function RunLocationPrompt
 {
     #Returns an hostname and IP based on users input of location to run
 
@@ -194,11 +194,11 @@ Function WhereToRun
         } #End Switch
 
     return $y
-} #End Function WhereToRun
+} #End Function RunLocationPrompt
 
 
 #----------------------------------------------Script-----------------------------------
-Clear
+Clear-Host
 Write-Host "Welcome to the Administrator Script."
 Write-Host "Created by Steven Craig, 01Aug18"
 
@@ -208,7 +208,7 @@ If ($welcome -ne "999") { $adminName = AskInput "What is your administrator user
 While ($welcome -ne "999") {
     Switch ($welcome) {
         1 { #-----CREATE A USER------
-            $IP = WhereToRun
+            $IP = RunLocationPrompt
             $fullName = (AskInput "What is the user's first name (first)") + " " + (AskInput "What is the user's last name (last)")
             $userName = AskInput "What is the desired username for the new user"
             $descrip = AskInput "What is the job title of the user"
@@ -222,7 +222,7 @@ While ($welcome -ne "999") {
                 invoke-command -Session $sess -ScriptBlock {
                     param($Rusername,$RfullName,$Rdisable,$Rdescrip,$Rrights)
                     $ADSI = [ADSI]"WinNT://$env:COMPUTERNAME"
-                    $user = $ADSI.Children | where { $_.SchemaClassName -eq 'user' -and $_.Name -eq $Rusername }
+                    $user = $ADSI.Children | Where-Object { $_.SchemaClassName -eq 'user' -and $_.Name -eq $Rusername }
                     if ($user -eq $null) {
                         $newUser = $ADSI.Create("User",$RuserName)
                         $newUser.SetPassword("YOUR_TEMP_PASSWORD")
@@ -257,17 +257,17 @@ While ($welcome -ne "999") {
                     else { Write-Error "User $Rusername already exists"; return }
 
                     #tests for creation and gives feedback
-                    $user = $ADSI.Children | where { $_.SchemaClassName -eq 'user' -and $_.Name -eq $Rusername }
+                    $user = $ADSI.Children | Where-Object { $_.SchemaClassName -eq 'user' -and $_.Name -eq $Rusername }
                     if ($user -eq $null) { Write-Error "The user was not succesffully created"; return }
                     else { Write-Host -ForegroundColor Green "The user was successfully created" }
                     } -ArgumentList $userName,$fullName,$disable,$descrip,$rights    #End scriptblock
-                $IP = WhereToRun
+                $IP = RunLocationPrompt
                 } #End While
             CleanUp
             break } # End Switch 1 (Create User)
 
         2 { #--------DISABLE THE ACCOUNT---------
-            $IP = WhereToRun
+            $IP = RunLocationPrompt
             $userName = AskInput "What is the username you wish to disable"
 
             While ($IP -ne "end") {
@@ -277,18 +277,18 @@ While ($welcome -ne "999") {
                 invoke-command -Session $sess -ScriptBlock {
                     param($Rusername)
                     $ADSI = [ADSI]"WinNT://$env:COMPUTERNAME"
-                    $user = $ADSI.Children | where { $_.SchemaClassName -eq 'user' -and $_.Name -eq $Rusername }
+                    $user = $ADSI.Children | Where-Object { $_.SchemaClassName -eq 'user' -and $_.Name -eq $Rusername }
 
                     if ($user -eq $null) { Write-Error "User $Rusername does not exist"; return } #End If
                     else { $user.userflags = 2; $user.SetInfo(); Write-Host -Foreground Green "The user was successfully disabled"}
                     } -ArgumentList $userName     #End scriptblock
-                $IP = WhereToRun
+                $IP = RunLocationPrompt
                 } #End While
             CleanUp
             break } #End Switch 2 (Disable User)
 
         3 { #---------ENABLE AND UNLOCK THE ACCOUNT----------
-            $IP = WhereToRun
+            $IP = RunLocationPrompt
             $userName = AskInput "What is the username you wish to enable"
 
             While ($IP -ne "end") {
@@ -298,7 +298,7 @@ While ($welcome -ne "999") {
                 invoke-command -Session $sess -ScriptBlock {
                     param($Rusername)
                     $ADSI = [ADSI]"WinNT://$env:COMPUTERNAME"
-                    $user = $ADSI.Children | where { $_.SchemaClassName -eq 'user' -and $_.Name -eq $Rusername }
+                    $user = $ADSI.Children | Where-Object { $_.SchemaClassName -eq 'user' -and $_.Name -eq $Rusername }
 
                     if ($user -eq $null) { Write-Error "User $Rusername does not exist"; return } #End If
                     if ($user.IsAccountLocked -eq $False) { Write-Host -ForegroundColor Green "The user was already unlocked... no action taken" }
@@ -307,13 +307,13 @@ While ($welcome -ne "999") {
                     $user.SetInfo()
                     Write-Host -Foreground Green "Account is set to enabled."
                     } -ArgumentList $userName     #End scriptblock
-                $IP = WhereToRun
+                $IP = RunLocationPrompt
                 } #End While
             CleanUp
             break } #End Switch 3 (Enable User)
 
         4 {#---------ADD PERMISSIONS-----------
-            $IP = WhereToRun
+            $IP = RunLocationPrompt
             $userName = AskInput "What is the username you wish to add permissions on"
             $rights = ExistingRightsRequired
 
@@ -324,7 +324,7 @@ While ($welcome -ne "999") {
                 invoke-command -Session $sess -ScriptBlock {
                     param($Rusername, $Rrights)
                     $ADSI = [ADSI]"WinNT://$env:COMPUTERNAME"
-                    $user = $ADSI.Children | where { $_.SchemaClassName -eq 'user' -and $_.Name -eq $Rusername }
+                    $user = $ADSI.Children | Where-Object { $_.SchemaClassName -eq 'user' -and $_.Name -eq $Rusername }
 
                     if ($user -eq $null) { Write-Error "User $Rusername does not exist"; return } #End If
                     else {
@@ -344,13 +344,13 @@ While ($welcome -ne "999") {
                                 } #End Switch
                             } #End Else
                     } -ArgumentList $userName,$rights     #End scriptblock
-                $IP = WhereToRun
+                $IP = RunLocationPrompt
                 } #End While
             CleanUP
             break } #End Switch 4 (Add Permisions)
 
         5 { #---------REMOVE PERMISSIONS-----------
-            $IP = WhereToRun
+            $IP = RunLocationPrompt
             $userName = AskInput "What is the username you wish to remove permissions from"
             $rights = ExistingRightsRequired
 
@@ -361,7 +361,7 @@ While ($welcome -ne "999") {
                 invoke-command -Session $sess -ScriptBlock {
                     param($Rusername, $Rrights)
                     $ADSI = [ADSI]"WinNT://$env:COMPUTERNAME"
-                    $user = $ADSI.Children | where { $_.SchemaClassName -eq 'user' -and $_.Name -eq $Rusername }
+                    $user = $ADSI.Children | Where-Object { $_.SchemaClassName -eq 'user' -and $_.Name -eq $Rusername }
 
                     if ($user -eq $null) { Write-Error "User $Rusername does not exist"; return } #End If
                     else {
@@ -381,7 +381,7 @@ While ($welcome -ne "999") {
                                 } #End Switch
                             } #End Else
                     } -ArgumentList $userName,$rights     #End scriptblock
-                $IP = WhereToRun
+                $IP = RunLocationPrompt
                 } #End While
             CleanUP
             break } #End Switch 5 (Remove Permissions)
@@ -389,7 +389,7 @@ While ($welcome -ne "999") {
         6 { #---------RESET PASSWORD-----------
             $answer = AskYorN "Do not run a password reset on the user unless they are going to immediatley reset it. If the user present to reset the password?"
             If ($answer) {
-                $IP = WhereToRun
+                $IP = RunLocationPrompt
                 $userName = AskInput "What is the username you wish to reset to a default password"
 
                 While ($IP -ne "end") {
@@ -399,12 +399,12 @@ While ($welcome -ne "999") {
                     invoke-command -Session $sess -ScriptBlock {
                         param($Rusername)
                         $ADSI = [ADSI]"WinNT://$env:COMPUTERNAME"
-                        $user = $ADSI.Children | where { $_.SchemaClassName -eq 'user' -and $_.Name -eq $Rusername }
+                        $user = $ADSI.Children | Where-Object { $_.SchemaClassName -eq 'user' -and $_.Name -eq $Rusername }
 
                         if ($user -eq $null) { Write-Error "User $Rusername does not exist"; return } #End If
                         else { $user.SetPassword("YOUR_TEMP_PASSWORD") ; $user.put("PasswordExpired",1); $user.SetInfo(); Write-Host -Foreground Green "The password was successfully defaulted. Please have the user login to reset it now."}
                         } -ArgumentList $userName     #End scriptblock
-                    $IP = WhereToRun
+                    $IP = RunLocationPrompt
                     } #End While
                 CleanUp
                 } #End If
@@ -412,7 +412,7 @@ While ($welcome -ne "999") {
             break } #End Switch 6 (Password Reset)
 
         7 { #---------DELETE USER-----------;
-            $IP = WhereToRun
+            $IP = RunLocationPrompt
             $userName = AskInput "What is the username you wish to delete"
 
             While ($IP -ne "end") {
@@ -422,12 +422,12 @@ While ($welcome -ne "999") {
                 invoke-command -Session $sess -ScriptBlock {
                     param($Rusername)
                     $ADSI = [ADSI]"WinNT://$env:COMPUTERNAME"
-                    $user = $ADSI.Children | where { $_.SchemaClassName -eq 'user' -and $_.Name -eq $Rusername }
+                    $user = $ADSI.Children | Where-Object-Object { $_.SchemaClassName -eq 'user' -and $_.Name -eq $Rusername }
 
                     if ($user -eq $null) { Write-Error "User $Rusername does not exist"; return } #End If
                     else { $ADSI.Delete("User",$Rusername); Write-Host -Foreground Green "The user was successfully deleted"}
                     } -ArgumentList $userName     #End scriptblock
-                $IP = WhereToRun
+                $IP = RunLocationPrompt
                 } #End While
             CleanUp
             break } #End Switch 7 (Delete User)
