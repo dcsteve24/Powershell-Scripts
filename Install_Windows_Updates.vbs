@@ -1,7 +1,7 @@
 'Not Powershell but I do what I want :-P (wasnt worth a whole new repo)
 'Not my creation but don't remember where I got this.
-'Installs a series of patches and logs results. Place patches in same folder as this script.
-'Log is created at folder it is ran in.
+'Installs a series of patches and logs results. Place all patches in the same folder and update spPatchFolder below.
+'Logs are created at location of the script.
 
 Dim fso, logFile, scriptDir
 scriptDir = left(WScript.ScriptFullName,(Len(WScript.ScriptFullName))-(len(WScript.ScriptName)))
