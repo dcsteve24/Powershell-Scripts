@@ -9,8 +9,8 @@ Import-Module ActiveDirectory
 #
 #The SearchBase argument takes an LDAP string; every folder structure in OU needs a new OU=, every
 #period in the DC needs a new dc=. Example: A Domain Users OU nested under Users OU in the domain
-#area52.afnoapps.us.af.mil would look like -SetBase "OU=Domain Users,OU=Users,dc=area52,dc=afnoapps,
-#dc=us,dc=af,dc=mil"
+#testing.test.com would look like -SetBase "OU=Domain Users,OU=Users,dc=testing,dc=test,
+#dc=com"
 #
 #Multiple OUs or DCs can also be specified by copying the $Users variable and changing the SearchBase
 #to whatever needed. Make each $Users line unique, i.e. $Users1="XXXX", and $Users2="XXXXX". Then
@@ -31,32 +31,17 @@ Import-Module ActiveDirectory
 #Functions
 Function DatePlease
 {
-    #Gives the date back in DDMMMYYYY format
+    #Gives the date back in YYYYMMDD format
     $y = ((Get-Date).year -as [string])
     $d = ((Get-Date).day -as [string])
-    $mInt = ((Get-Date).Month -as [string])
+    $m = ((Get-Date).Month -as [string])
 
-    Switch ($mInt){
-        1 {$mStr = "JAN"; break}
-        2 {$mStr = "FEB"; break}
-        3 {$mStr = "MAR"; break}
-        4 {$mStr = "APR"; break}
-        5 {$mStr = "MAY"; break}
-        6 {$mStr = "JUN"; break}
-        7 {$mStr = "JUL"; break}
-        8 {$mStr = "AUG"; break}
-        9 {$mStr = "SEP"; break}
-        10 {$mStr = "OCT"; break}
-        11 {$mStr = "NOV"; break}
-        12 {$mStr = "DEC"; break}
-        }
-
-    $rValue = $d + $mStr + $y
+    $rValue = $y + $m + $d
     return $rValue
 }
 
 #Set Variables
-$timeSpan = 35
+$timeSpan = 35     #Amount of time inactive before disabling
 $date = DatePlease
 $saveLocation = (AskData $saveLocation 2)+"\DisabledUsers"+$date
 $inactive = (Get-Date).AddDays(-($timeSpan))
