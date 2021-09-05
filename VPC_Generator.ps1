@@ -1,8 +1,5 @@
 Param([Parameter(Position=0)][string]$vpcPath, [Parameter(Position=1)][string]$380thPath, [Parameter(Position=2)][string]$finalPath)
 
-#Created by TSgt Steven A Craig, 12Aug19
-#Edit Log:
-
 #This script was designed to take EXCEL input from the military VPC Generator, and the current tracker 
 # grab information needed, then output it as the new "tracker". Eliminated manual updating.
 
