@@ -18,11 +18,6 @@ Install-Module ExchangeOnlineManagement -Confirm:$false
 #
 #
 #Notes: If user running the script does not have access to required areas, script will fail
-#
-#
-#Created: Steven Craig, ISSO 07Oct18
-#Edited: Steven Craig, ISSM 26Feb19 to point logs to new shared drive and edit date format
-#        Steven Craig, Sys Adm 23Apr20 Now Looking at Azure AD for inactivity calculations due to non-laptop movement
 #--------------------------------------------------------------------------------------------------------
 
 #Functions
