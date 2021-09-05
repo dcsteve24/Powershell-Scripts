@@ -23,11 +23,8 @@ Import-Module ActiveDirectory
 #can't be accessed, therefore nobody will be disabled and a blank file will be created. This script
 #must be ran on PowerShell v2 or greater and must be able to load the ActiveDirectory Module (usually
 #best to run on the DC)
-#
-#Created: Steven Craig, 17May18
-#Edited: 25Jun18 Property used was not updated to correct dates in Windows side. Found a different
-#	property to use that required conversion and edited script to work.
 #--------------------------------------------------------------------------------------------
+
 #Functions
 Function DatePlease
 {
