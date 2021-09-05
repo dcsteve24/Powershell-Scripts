@@ -19,9 +19,6 @@ Param([Parameter(Position=0)][int]$year, [Parameter(Position=1)][int]$month, [Pa
 #
 #This script has been tested on a 9TB scan. It took roughly 15 hours to scan, before
 # moving files. It has been created to work on all versions of PowerShell.
-#
-#Created: Steven Craig, 28Aug18
-#Edited:
 #-----------------------------------------------------------------------------------------
 
 #Functions
