@@ -39,8 +39,6 @@ Where-ObjectWhere-ObjectWhere-ObjectWhere-ObjectWhere-ObjectWhere-ObjectWhere-Ob
 # 6. Same thing as step 5 for switch statement 4 & 5 "Remove/Add Permissions". Edit YOUR_GROUP_NAME_DESCRIPTION and add/remove as needed.
 # 7. Same thing as step 4 for switch statement 6 "Reset Password"; set the "YOUR_TEMP_PASSWORD" to a temp password for your org.
 
-#Created: Steven Craig, 21May18
-#Edited: Generalized for Github -- 29Mar19, Steven Craig
 #==============================================================================================================================
 
 #----------------------------------------------Functions-------------------------------
