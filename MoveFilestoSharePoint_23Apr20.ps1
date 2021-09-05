@@ -1,5 +1,4 @@
 ﻿#Copy Multiple Files with Folder structure to SharePoint Online Document Library
-#Created by Steven Craig w/ references to online sources
 
 #Install modules / Set Prereqs
 Install-Module SharePointPnPPowerShellOnline -Confirm:$false
