@@ -3,9 +3,6 @@
 #location by the user.
 #
 #Notes: If user running the script does not have access to desired location, script will fail
-#
-#Created: Steven Craig, Harris Sub-contractor 02May18
-#Edited:
 #--------------------------------------------------------------------------------------------
 
 Function CheckWrite
