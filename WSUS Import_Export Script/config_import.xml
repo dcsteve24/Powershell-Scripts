@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Configuration>
+	<LogFile>wsusimportexport.log</LogFile>
+	<MaxLogSize>2621440</MaxLogSize>
+
+	<Server>
+		<!-- Script does not support running remotely from WSUS Server at this time, sorry -->
+		<WSUSHostname>XXXXXXXXXXXXX</WSUSHostname>
+		<WSUSPortNumber>8531</WSUSPortNumber>
+		<WSUSSSLEnabled>True</WSUSSSLEnabled>
+	</Server>
+
+	<Actions>
+		<Action Name='Import' Enabled='True'>
+			<Option Name='SourceDir' Location='E:\WSUS' />
+			<Option Name='WSUSContent' Enabled='False' />
+			<Option Name='Metadata' Enabled='True' Filename='WSUSMetadata.xml.gz' DropSUSDB='True' />
+			<Option Name='XMLConfiguration' Enabled='True' Filename='WSUSConfig.xml' IncludeApprovals='True' />
+		</Action>
+		<Action Name='Export' Enabled='False'>
+			<Option Name='DestinationDir' Location='D:\WSUS_IEM' />
+			<Option Name='WSUSContent' Enabled='False' />
+			<Option Name='Metadata' Enabled='True' Filename='WSUSMetadata.xml.gz'/>
+			<Option Name='XMLConfiguration' Enabled='True' Filename='WSUSConfig.xml' IncludeApprovals='True' />
+		</Action>
+		<Action Name='ReindexSUSDB' Enabled='True' />
+		<Action Name='UseCustomIndexes' Enabled='True' />
+		<Action Name='RemoveCustomIndexes' Enabled='False' />
+
+		<Action Name='SetIISWSUSPoolSettings' Enabled='True'>
+			<PoolSetting Name='WSUSPoolName'>WsusPool</PoolSetting>
+			<PoolSetting Name='QueueLength'>25000</PoolSetting>
+			<PoolSetting Name='IdleTimeout'>0</PoolSetting>
+			<PoolSetting Name='PingEnabled'>False</PoolSetting>
+			<PoolSetting Name='PrivateMemoryLimit'>0</PoolSetting>
+			<PoolSetting Name='RegularTimeInterval'>0</PoolSetting>
+		</Action>
+
+		<!--This action will run an update statement on the WSUS DB to make locally published updates, like third-party products updates, show up in the WSUS Console.-->
+		<Action Name='ShowLocallyPublishedUpdates' Enabled='True' />
+	</Actions>
+</Configuration>
